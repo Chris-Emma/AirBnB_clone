@@ -21,3 +21,20 @@ The Command Interpreter is exactly the same as the Shell but limited to a specif
 * Update attributes of an object
 * Do operations on objects (count, compute stats, etc…)
 * Destroy an object
+
+## Execution
+Your shell should work like this in interactive mode:
+
+```
+$ ./console.py
+(hbnb) help
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit
+
+(hbnb) 
+(hbnb) 
+(hbnb) quit
+$
+```
