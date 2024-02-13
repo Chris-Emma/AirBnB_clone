@@ -17,6 +17,10 @@ class FileStorage:
     __objects: dictionary - empty but will store all objects by <class name>.id
     """
 
+    CLASSES = {
+            'BaseModel': BaseModel
+    }
+
     __file_path = "file.json"
     __objects = {} #dict to store all objects by <class_name>.id
 
