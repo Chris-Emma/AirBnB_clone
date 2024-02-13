@@ -38,15 +38,15 @@ class FileStorage:
         """
         Deserializes the JSON file to __objects.
         Only if the JSON file (__file_path) exists; otherwise, do nothing.
-        If the file does not exist, no exception should be raised.
+        No exemption if the file is empty
         """
         if path.exists(self.__file_path):
             with open(self.__file_path, 'r', encoding="utf-8") as file:
                 serialized_objects = json.load(file)
                 for key, obj_data in serialized_objects.items():
                     class_name, obj_id = key.split('.')
-                    # Dynamically create an instance of
-                    # the class based on class_name
+                    # create an instance of
+                    # the class based on class_name dynamically
                     obj_class = globals()[class_name]
                     obj_instance = obj_class(**obj_data)
                     # Store the instance in __objects
