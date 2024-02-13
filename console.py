@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
 """
-    CMD MODULE
-    for building line oriented command interpreters
+    cmd module for building line oriented command interpreters
 """
 
 import cmd
 from models.base_model import BaseModel
 from models import storage
+import re
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
@@ -41,7 +41,6 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-
         try:
             class_name = args[0]
             object = self.CLASSES[class_name]()
