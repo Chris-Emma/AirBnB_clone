@@ -113,5 +113,43 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
+        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s(".*"|[^"]\S*)?)?)?)?'
+        match = re.search(rex, line)
+
+        if not match:
+            print("** invalid command format **")
+            return
+
+        classname, uid, attribute, value = match.groups()
+
+        if classname not in self.CLASSES:
+            print("** class doesn't exist **")
+            return
+        elif not uid:
+            print("** instance id missing **")
+            return
+
+        key = f"{classname}.{uid}"
+        if key not in storage.all():
+            print("** no instance found **")
+            return
+        elif not attribute:
+            print("** attribute name missing **")
+            return
+        elif not value:
+            print("** value missing **")
+            return
+
+        obj = storage.all()[key]
+
+        # Stores the previous updated_at value
+        # prev_updated_at = obj.updated_at
+
+        # Simplifies the  attribute handling (without explicit checks)
+        setattr(obj, attribute, value)
+
+        # Always update the updated_at attribute
+        # obj.updated_at = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        storage.all()[key].save()
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
