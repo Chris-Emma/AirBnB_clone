@@ -17,12 +17,13 @@ class HBNBCommand(cmd.Cmd):
     }
 
     def emptyline(self):
-        """This shouls do nothing on an empty line"""
+        """This should do nothing on an empty line"""
         pass
 
     def do_EOF(self, line):
-        """ Exits the console when EOF command is entered"""
+        """ Exits the program"""
         print()
+        return True
 
     def do_quit(self, line):
         """ Quits the console"""
