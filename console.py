@@ -8,12 +8,25 @@ import cmd
 from models.base_model import BaseModel
 from models import storage
 import re
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+from datetime import datetime
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     CLASSES = {
-            'BaseModel': BaseModel
+            'BaseModel': BaseModel,
+            'User': User,
+            'State': State,
+            'City': City,
+            'Amenity': Amenity,
+            'Place': Place,
+            'Review': Review
     }
 
     def emptyline(self):
@@ -32,6 +45,70 @@ class HBNBCommand(cmd.Cmd):
     def help_quit(self):
         """Help message for the quit command."""
         print("Quit command to exit the program\n")
+
+    def handle_custom_command(self, class_name, action):
+        """Handle custom commands like <class name>.all()
+        or <class name>.count()."""
+        parts = action.split("(")
+        if len(parts) == 2 and parts[1].endswith(')'):
+            action_name = parts[0]
+            action_args = parts[1][:-1].split(',')
+
+            action_args = [arg.strip('\"') for arg in action_args]
+
+            if action_name == 'show':
+                key = "{}.{}".format(class_name, action_args[0])
+                if key in storage.all():
+                    print(storage.all()[key])
+                else:
+                    print(f"** no instance found **")
+            elif action_name == 'all':
+                instances = [
+                    str(obj) for key, obj in storage.all().items()
+                    if key.startswith(class_name + '.')
+                ]
+                print(instances)
+            elif action_name == 'count':
+                count = sum(
+                    1 for key in storage.all()
+                    if key.startswith(class_name + '.')
+                )
+                print(count)
+            elif action_name == 'destroy':
+                key = "{}.{}".format(class_name, action_args[0])
+                if key in storage.all():
+                    del storage.all()[key]
+                    storage.save()
+                else:
+                    print(f"** no instance found **")
+            elif action_name == 'update':
+                key = "{}.{}".format(class_name, action_args[0])
+                if key in storage.all():
+                    obj = storage.all()[key]
+                    attribute_name = action_args[1]
+                    attribute_value = action_args[2]
+
+                    setattr(obj, attribute_name, attribute_value)
+                    obj.save()
+                else:
+                    print(f"** no instance found **")
+            else:
+                print(f"Unrecognized action: {action_name}.\
+                Type 'help' for assistance.\n")
+        else:
+            print(f"Unrecognized action: {action}.\
+            Type 'help' for assistance.\n")
+
+    def default(self, line):
+        """Handle unrecognized commands."""
+        parts = line.split('.')
+        if len(parts) == 2:
+            class_name, action = parts
+            self.handle_custom_command(class_name, action)
+        else:
+            print(f"Unrecognized command: {line}.\
+                  Type 'help' for assistance.\n")
+
 
     def do_create(self, line):
         """  Creates a new instance of BaseModel,
